@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const cors= require('cors')
-const secretKey = "secret123";
+const secretKey = process.env.SECRET_KEY;
 
 require('dotenv').config()
 const app = express();
@@ -43,7 +43,7 @@ const authenticateToken = (req, res, next) => {
 
 const Product = require("./model/product");
 
-app.get("/products",authenticateToken, async (req, res) => {
+app.get("/products", async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
