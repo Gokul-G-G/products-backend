@@ -43,7 +43,7 @@ const authenticateToken = (req, res, next) => {
 
 const Product = require("./model/product");
 
-app.get("/products", async (req, res) => {
+app.get("/products",authenticateToken, async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
