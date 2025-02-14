@@ -1,26 +1,26 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const cors= require('cors')
+const cors = require("cors");
 const secretKey = process.env.SECRET_KEY;
 
-require('dotenv').config()
 const app = express();
-const port = process.env.PORT
+const port = process.env.PORT;
 app.use(express.json());
-app.use(cors(
-  {
-    origin:'https://products-frontend-7a10.onrender.com'
-}
-))
+app.use(
+  cors({
+    origin: "https://products-frontend-7a10.onrender.com",
+  })
+);
 app.get("/", (req, res) => {
   res.send("from the server");
 });
 
-const url=process.env.MONGODB_URL
+const url = process.env.MONGODB_URL;
 async function main() {
-  console.log(url)
+  console.log(url);
   await mongoose.connect(url);
 }
 
@@ -43,7 +43,7 @@ const authenticateToken = (req, res, next) => {
 
 const Product = require("./model/product");
 
-app.get("/products",authenticateToken, async (req, res) => {
+app.get("/products", authenticateToken, async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
@@ -56,7 +56,7 @@ app.get("/products",authenticateToken, async (req, res) => {
 
 app.post("/products", async (req, res) => {
   try {
-    const { name, price, description, url ,rating } = req.body;
+    const { name, price, description, url, rating } = req.body;
 
     console.log("Received data:", req.body); // Log received request body for debugging
 
@@ -65,11 +65,13 @@ app.post("/products", async (req, res) => {
       price,
       description,
       url,
-      rating
+      rating,
     });
 
     await newProduct.save();
-    res.status(201).json({message:"Product created successfully",Product:newProduct});
+    res
+      .status(201)
+      .json({ message: "Product created successfully", Product: newProduct });
   } catch (error) {
     res.status(400).json({
       message: "Error while creating the product",
@@ -134,9 +136,8 @@ app.post("/user", async (req, res) => {
       };
       var user = new User(userItem);
       await user.save();
-      res.status(201).json({message:"Signup Successfull",user:user});
+      res.status(201).json({ message: "Signup Successfull", user: user });
     });
-   
   } catch (error) {
     res.status(400).json(error);
   }
@@ -150,9 +151,9 @@ app.post("/login", async (req, res) => {
     if (!user) {
       return res.status(500).json({ error: "User not Found" });
     }
-    console.log(password)
-    console.log(user.password)
-    const isValid =await bcrypt.compare(password,user.password);
+    console.log(password);
+    console.log(user.password);
+    const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
       return res.status(500).json({ error: "Invalid Credentials" });
     }
